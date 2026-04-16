@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>My Plant Care Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #f5f0e8;
+    --moss: #3d5a3e;
+    --sage: #7a9e7e;
+    --clay: #c17f5a;
+    --bark: #4a3728;
+    --leaf: #a8c5a0;
+    --petal: #e8d5b7;
+    --text: #2a2a2a;
+    --muted: #7a7065;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+
+  header {
+    background: var(--moss);
+    color: var(--cream);
+    padding: 28px 20px 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    left: 0; right: 0;
+    height: 40px;
+    background: var(--cream);
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  }
+
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+  }
+
+  header p {
+    font-size: 13px;
+    color: var(--leaf);
+    margin-top: 4px;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+  }
+
+  .emoji-header { font-size: 32px; margin-bottom: 8px; }
+
+  /* TAB BAR */
+  .tab-bar {
+    display: flex;
+    overflow-x: auto;
+    padding: 20px 16px 0;
+    gap: 8px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .tab-bar::-webkit-scrollbar { display: none; }
+
+  .tab-btn {
+    flex-shrink: 0;
+    background: var(--petal);
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .tab-btn.active {
+    background: var(--moss);
+    color: white;
+    box-shadow: 0 4px 12px rgba(61,90,62,0.3);
+  }
+
+  /* PLANT PANELS */
+  .plant-panel {
+    display: none;
+    padding: 20px 16px;
+    animation: fadeSlide 0.3s ease;
+  }
+  .plant-panel.active { display: block; }
+
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .plant-hero {
+    background: var(--moss);
+    border-radius: 20px;
+    padding: 24px;
+    color: white;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .plant-hero::after {
+    content: attr(data-emoji);
+    position: absolute;
+    right: 16px;
+    bottom: -8px;
+    font-size: 72px;
+    opacity: 0.25;
+    line-height: 1;
+  }
+
+  .plant-hero h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .plant-hero .latin {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--leaf);
+    margin-top: 3px;
+  }
+
+  .difficulty {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 12px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 10px;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  /* CARDS */
+  .card {
+    background: white;
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .card-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .card-icon.water { background: #ddf0ff; }
+  .card-icon.how   { background: #e8f5e9; }
+  .card-icon.freq  { background: #fff3e0; }
+  .card-icon.sun   { background: #fff9c4; }
+
+  .card-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+
+  .card p {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text);
+    font-weight: 300;
+  }
+
+  .card p strong { font-weight: 500; color: var(--moss); }
+
+  .tip-box {
+    background: var(--petal);
+    border-left: 3px solid var(--clay);
+    border-radius: 0 10px 10px 0;
+    padding: 10px 14px;
+    margin-top: 10px;
+    font-size: 13.5px;
+    color: var(--bark);
+    line-height: 1.5;
+  }
+
+  .freq-badge {
+    display: inline-block;
+    background: var(--moss);
+    color: white;
+    border-radius: 12px;
+    padding: 4px 12px;
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 8px;
+  }
+
+  .window-steps {
+    list-style: none;
+    margin-top: 4px;
+  }
+
+  .window-steps li {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+    font-size: 15px;
+    line-height: 1.55;
+    font-weight: 300;
+  }
+
+  .step-num {
+    background: var(--sage);
+    color: white;
+    min-width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="emoji-header">🪴</div>
+  <h1>My Plant Care Guide</h1>
+  <p>South-facing high-rise · Atlanta, GA</p>
+</header>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="showPlant(0)">Golden Pothos</button>
+  <button class="tab-btn" onclick="showPlant(1)">Fiddle Leaf Fig</button>
+  <button class="tab-btn" onclick="showPlant(2)">Snake Plant</button>
+  <button class="tab-btn" onclick="showPlant(3)">Bird of Paradise</button>
+</div>
+
+<!-- ======================== GOLDEN POTHOS ======================== -->
+<div class="plant-panel active" id="plant-0">
+  <div class="plant-hero" data-emoji="🌿">
+    <h2>Golden Pothos</h2>
+    <div class="latin">Epipremnum aureum</div>
+    <div class="difficulty">🟢 Beginner-friendly · Very forgiving</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon water">💧</div>
+      <div class="card-title">When to Water</div>
+    </div>
+    <p>Stick your finger <strong>1–2 inches into the soil</strong>. If it feels dry at that depth, it's time to water. The top of the soil should look and feel dry, not just slightly pale. Pothos also tells you it's thirsty when its leaves start to look slightly <strong>droopy or dull</strong> — don't wait that long, but it's a good backup signal.</p>
+    <div class="tip-box">⚠️ Pothos is much more likely to die from overwatering than underwatering. When in doubt, wait another day.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon how">🚿</div>
+      <div class="card-title">How to Water</div>
+    </div>
+    <p>Water <strong>thoroughly</strong> — pour slowly around the base until water drains freely from the bottom. Then <strong>empty the saucer</strong> after 30 minutes so roots never sit in standing water. Use room-temperature water.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon freq">🗓</div>
+      <div class="card-title">Expected Frequency</div>
+    </div>
+    <p>In your bright apartment, expect to water roughly:</p>
+    <div class="freq-badge">Every 7–10 days in summer · Every 14 days in winter</div>
+    <p style="margin-top:10px;">Always check the soil — don't just go by the calendar.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon sun">☀️</div>
+      <div class="card-title">Getting It to the Window</div>
+    </div>
+    <ul class="window-steps">
+      <li><span class="step-num">1</span><span>Good news: pothos is <strong>already fine</strong> in low to bright indirect light. South-facing windows can be intense though.</span></li>
+      <li><span class="step-num">2</span><span>Start the plant <strong>4–6 feet back</strong> from the window for the first 2 weeks.</span></li>
+      <li><span class="step-num">3</span><span>Move it <strong>1 foot closer</strong> every week. Watch for leaf bleaching or scorching (pale, washed-out patches) — if you see this, move it back a foot.</span></li>
+      <li><span class="step-num">4</span><span>The ideal final spot is <strong>2–3 feet from the glass</strong>, or right at the window if it's covered with a sheer curtain. Direct midday sun can scorch the leaves.</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ======================== FIDDLE LEAF FIG ======================== -->
+<div class="plant-panel" id="plant-1">
+  <div class="plant-hero" data-emoji="🌳">
+    <h2>Fiddle Leaf Fig</h2>
+    <div class="latin">Ficus lyrata</div>
+    <div class="difficulty">🔴 Intermediate · Needs consistency</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon water">💧</div>
+      <div class="card-title">When to Water</div>
+    </div>
+    <p>Check the soil by pressing your finger <strong>2 inches deep</strong>. Water only when it's <strong>dry at that depth</strong>. You can also lift the pot — a very light pot means dry soil. Look out for leaves that seem slightly less glossy or start to droop; that's a sign it's getting thirsty. <strong>Brown spots with yellow halos</strong> mean overwatering; dry, crispy brown edges mean underwatering.</p>
+    <div class="tip-box">🎯 Consistency is everything with FLFs. They hate change — same amount, same days, same spot.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon how">🚿</div>
+      <div class="card-title">How to Water</div>
+    </div>
+    <p>Water <strong>evenly and thoroughly</strong> around the entire pot until it drains from the bottom. Empty the saucer after 30 min. Use <strong>room-temp water</strong> — cold water can shock the roots. Avoid getting water on the leaves.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon freq">🗓</div>
+      <div class="card-title">Expected Frequency</div>
+    </div>
+    <p>In a bright, warm apartment:</p>
+    <div class="freq-badge">Every 7–10 days in growing season · Every 14–21 days in winter</div>
+    <p style="margin-top:10px;">Pick a day of the week and always check on that day — consistency reduces stress on the plant.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon sun">☀️</div>
+      <div class="card-title">Getting It to the Window</div>
+    </div>
+    <ul class="window-steps">
+      <li><span class="step-num">1</span><span>Fiddle leaf figs <strong>love bright indirect light</strong> and will thrive near your south window — but acclimate slowly.</span></li>
+      <li><span class="step-num">2</span><span>Place it <strong>6–8 feet back</strong> from the window initially. Leave it there for <strong>2 weeks</strong> without moving it at all.</span></li>
+      <li><span class="step-num">3</span><span>Move it <strong>1–2 feet closer</strong> every 2 weeks. Watch for <strong>leaf drop or brown spots</strong> — both signal stress.</span></li>
+      <li><span class="step-num">4</span><span>Final ideal spot: <strong>3–5 feet from the window</strong> with bright, indirect light most of the day. Some gentle morning sun is fine; harsh midday sun is not.</span></li>
+      <li><span class="step-num">5</span><span><strong>Do not rotate or move it once settled</strong> — FLFs drop leaves when disturbed. Pick a final spot and commit.</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ======================== SNAKE PLANT ======================== -->
+<div class="plant-panel" id="plant-2">
+  <div class="plant-hero" data-emoji="🗡️">
+    <h2>Snake Plant</h2>
+    <div class="latin">Sansevieria trifasciata</div>
+    <div class="difficulty">🟢 Very easy · Nearly indestructible</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon water">💧</div>
+      <div class="card-title">When to Water</div>
+    </div>
+    <p>Stick your finger <strong>all the way to your knuckle (2–3 inches)</strong> into the soil. Only water if it feels <strong>completely dry</strong> at that depth. You can also use a skewer — if it comes out clean and dry, it's time. Snake plants show overwatering as <strong>soft, mushy, yellowing leaves at the base</strong>. Underwatering shows as <strong>wrinkled or curling leaves</strong>.</p>
+    <div class="tip-box">💡 Snake plants can go weeks without water. The #1 killer is overwatering. Err heavily on the side of dry.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon how">🚿</div>
+      <div class="card-title">How to Water</div>
+    </div>
+    <p>Water <strong>deeply but infrequently</strong> — soak the soil fully until water comes out the drainage hole, then let it drain completely. Empty the saucer. <strong>Never let it sit in water.</strong> In winter, reduce watering to once a month or even less.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon freq">🗓</div>
+      <div class="card-title">Expected Frequency</div>
+    </div>
+    <p>In a bright spot:</p>
+    <div class="freq-badge">Every 2–4 weeks in summer · Every 4–8 weeks in winter</div>
+    <p style="margin-top:10px;">Always check with your finger first. In bright light it'll dry out faster.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon sun">☀️</div>
+      <div class="card-title">Getting It to the Window</div>
+    </div>
+    <ul class="window-steps">
+      <li><span class="step-num">1</span><span>Snake plants tolerate almost any light, from deep shade to direct sun — they're one of the most adaptable plants out there.</span></li>
+      <li><span class="step-num">2</span><span>Start <strong>4–5 feet from the window</strong> for 1 week just to let it settle in from the nursery.</span></li>
+      <li><span class="step-num">3</span><span>Move it <strong>2 feet closer</strong> each week — you'll likely hit the window in 2–3 moves with no issues.</span></li>
+      <li><span class="step-num">4</span><span>At the window: it can handle <strong>direct south-facing sun</strong>, though very harsh afternoon sun through glass may bleach leaves. A spot with morning to midday sun is ideal.</span></li>
+      <li><span class="step-num">5</span><span>If leaves start looking pale or yellowish-white, move it back slightly. Otherwise, enjoy it right at the window!</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ======================== BIRD OF PARADISE ======================== -->
+<div class="plant-panel" id="plant-3">
+  <div class="plant-hero" data-emoji="🌺">
+    <h2>White Bird of Paradise</h2>
+    <div class="latin">Strelitzia nicolai</div>
+    <div class="difficulty">🟡 Moderate · Loves lots of light</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon water">💧</div>
+      <div class="card-title">When to Water</div>
+    </div>
+    <p>Check by pushing your finger <strong>2 inches into the soil</strong>. Water when the top 2 inches are <strong>dry but the deeper soil is still slightly cool</strong>. Unlike snake plants, birds of paradise don't want to go bone dry. Watch for <strong>drooping or curling leaves</strong> (underwatering) or <strong>yellowing lower leaves</strong> (overwatering).</p>
+    <div class="tip-box">🌿 In a bright south-facing window, this plant will grow fast and drink more. Check it weekly.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon how">🚿</div>
+      <div class="card-title">How to Water</div>
+    </div>
+    <p>Water <strong>thoroughly</strong> until it drains from the bottom, then empty the saucer. These plants like <strong>consistent moisture</strong> in summer — not soggy, but never fully dried out. In winter, let it dry a bit more between waterings. Use room-temperature water.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon freq">🗓</div>
+      <div class="card-title">Expected Frequency</div>
+    </div>
+    <p>Near your bright window:</p>
+    <div class="freq-badge">Every 7–10 days in summer · Every 14–21 days in winter</div>
+    <p style="margin-top:10px;">Adjust based on how quickly the soil dries — more light = faster drying = more frequent watering.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon sun">☀️</div>
+      <div class="card-title">Getting It to the Window</div>
+    </div>
+    <ul class="window-steps">
+      <li><span class="step-num">1</span><span>Bird of paradise <strong>craves direct bright light</strong> — your south-facing window is actually the ideal spot. It will thrive there.</span></li>
+      <li><span class="step-num">2</span><span>Start it <strong>5–6 feet back</strong> from the window for the first 1–2 weeks. Nurseries usually keep plants in moderate light, so a slow intro prevents shock.</span></li>
+      <li><span class="step-num">3</span><span>Move it <strong>2 feet closer</strong> every week. Watch for <strong>crispy leaf edges</strong> (too intense too fast) or <strong>pale leaves</strong> (sunburn).</span></li>
+      <li><span class="step-num">4</span><span>After 3–4 weeks, you can place it <strong>right at the window</strong>. It genuinely wants as much direct sun as possible — 4–6 hours of direct light daily is ideal.</span></li>
+      <li><span class="step-num">5</span><span>Once settled, <strong>rotate the pot 90°</strong> every 2–4 weeks so all sides grow evenly toward the light.</span></li>
+    </ul>
+  </div>
+</div>
+
+<script>
+  const panels = document.querySelectorAll('.plant-panel');
+  const buttons = document.querySelectorAll('.tab-btn');
+
+  function showPlant(index) {
+    panels.forEach((p, i) => p.classList.toggle('active', i === index));
+    buttons.forEach((b, i) => b.classList.toggle('active', i === index));
+    // Scroll the active button into view
+    buttons[index].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  }
+</script>
+</body>
+</html>
